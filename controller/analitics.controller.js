@@ -35,7 +35,7 @@ exports.checkUpToDate = async (req, res, next) => {
                     gameId: lastGameId[i],
                     apm: analitics.civilisations[0][i_games].apm,
                     kills: analitics.civilisations[0][i_games].kills,
-                    death: analitics.civilisations[0][i_games].deaths,
+                    deaths: analitics.civilisations[0][i_games].deaths,
                     relicsWin: analitics.civilisations[0][i_games].relicsWin,
                     relicsLost: analitics.civilisations[0][i_games].relicsLost
                 }
@@ -73,28 +73,57 @@ exports.matchgameIdandStat = async (req, res, next) => {
                 const i_players = game.players.findIndex(
                     (player) => player.name == req.params.user
                 )
+                const team = game.players.filter(
+                    (player) => player.team == game.players[i_players].team
+                )
+                const opponents = game.players.filter(
+                    (player) => player.team != game.players[i_players].team
+                )
                 analitics.civilisations[0][i].apm = game.players[i_players].apm
                 analitics.civilisations[0][i].kills =
                     game.players[i_players]._stats.ekills
                 analitics.civilisations[0][i].deaths =
                     game.players[i_players]._stats.edeaths
+                for (player of team) {
+                    if (player.actions.monk_statetree_deposit_relic)
+                        analitics.civilisations[0][i].relicsWin +=
+                            player.actions.monk_statetree_deposit_relic.length
+                }
+                for (player of opponents) {
+                    if (player.actions.monk_statetree_deposit_relic)
+                        analitics.civilisations[0][i].relicsLost +=
+                            player.actions.monk_statetree_deposit_relic.length
+                }
             }
         }
         await modifyAnalitics(req.params.user, analitics)
         const _analitics = await getAnaliticsByUser(req.params.user)
+
         //computing the average
-        let averageAPM = 0
+        let average = {
+            apm: 0,
+            military: 0,
+            relics: 0
+        }
         let kills = 0
         let deaths = 0
+        let relicsWin = 0
+        let relicsLost = 0
+
         for (let i = 0; i < 10; i++) {
-            averageAPM = averageAPM + _analitics.civilisations[0][i].apm
-            kills = kills + _analitics.civilisations[0][i].kills
-            deaths = deaths + _analitics.civilisations[0][i].deaths
+            average.apm += _analitics.civilisations[0][i].apm
+            kills += _analitics.civilisations[0][i].kills
+            deaths += _analitics.civilisations[0][i].deaths
+            relicsWin += _analitics.civilisations[0][i].relicsWin
+            relicsLost += _analitics.civilisations[0][i].relicsLost
         }
-        averageAPM = parseInt(averageAPM / 10)
-        let averageMilitary = parseInt((kills / deaths) * 100) / 100
-        _analitics.apm = averageAPM
-        _analitics.military = averageMilitary
+        _analitics.apm = parseInt(average.apm / 10)
+        _analitics.military = parseInt((kills / deaths) * 100) / 100
+        if (relicsLost != 0) {
+            _analitics.relics = parseInt((relicsWin / relicsLost) * 100) / 100
+        } else {
+            _analitics.relics = 100
+        }
         await modifyAnalitics(req.params.user, _analitics)
         next()
     } catch (e) {
