@@ -7,7 +7,7 @@ const path = require('path')
 router.use('/whitelist', whitelist)
 router.use('/analitics', analitics)
 router.use('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client-build/index.html'))
+    res.json({ prout: 'caca' })
 })
 
 module.exports = router
