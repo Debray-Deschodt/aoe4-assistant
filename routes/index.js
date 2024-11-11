@@ -10,7 +10,11 @@ router.use('/', (req, res) => {
     res.json({
         toto: 'tata',
         coco: 'caca',
-        lolo: 'lala'
+        lolo: 'lala',
+        bobo: {
+            titi: 'tata',
+            bibi: 'baba'
+        }
     })
 })
 
