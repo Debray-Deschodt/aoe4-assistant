@@ -7,7 +7,11 @@ const path = require('path')
 router.use('/whitelist', whitelist)
 router.use('/analitics', analitics)
 router.use('/', (req, res) => {
-    res.json({ prout: 'caca' })
+    res.json({
+        toto: 'tata',
+        coco: 'caca',
+        lolo: 'lala'
+    })
 })
 
 module.exports = router
