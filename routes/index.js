@@ -75,5 +75,32 @@ router.use('/complete', (req, res) => {
         }
     })
 })
+router.use('/types', (req, res) => {
+    res.json({
+        toto: 'tata',
+        coco: 'caca',
+        lolo: 'lala',
+        bobo: {
+            titi: 'tata',
+            bibi: [
+                {
+                    toto: true,
+                    coco: false,
+                    lolo: 1
+                },
+                {
+                    toto: 3,
+                    coco: 'lala',
+                    lolo: 'coucou'
+                },
+                {
+                    toto: 7.345345,
+                    coco: 3.1415,
+                    lolo: 'lala'
+                }
+            ]
+        }
+    })
+})
 
 module.exports = router
