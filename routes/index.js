@@ -37,7 +37,7 @@ router.use('/tab', (req, res) => {
         bobo: ['tata', 'baba']
     })
 })
-router.use('/complete', (req, res) => {
+router.use('/child_tab', (req, res) => {
     res.json({
         toto: 'tata',
         coco: 'caca',
@@ -45,6 +45,33 @@ router.use('/complete', (req, res) => {
         bobo: {
             titi: 'tata',
             bibi: ['baba', 'rara', 'papa']
+        }
+    })
+})
+router.use('/complete', (req, res) => {
+    res.json({
+        toto: 'tata',
+        coco: 'caca',
+        lolo: 'lala',
+        bobo: {
+            titi: 'tata',
+            bibi: [
+                {
+                    toto: 1,
+                    coco: 2,
+                    lolo: 3
+                },
+                {
+                    toto: 4,
+                    coco: 5,
+                    lolo: 6
+                },
+                {
+                    toto: 7,
+                    coco: 8,
+                    lolo: 'lala'
+                }
+            ]
         }
     })
 })
