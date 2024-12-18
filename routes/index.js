@@ -3,6 +3,7 @@ const router = express.Router()
 const whitelist = require('./whitelist')
 const analitics = require('./analitics')
 const path = require('path')
+const axios = require('axios')
 
 router.use('/whitelist', whitelist)
 router.use('/analitics', analitics)
@@ -11,6 +12,27 @@ router.use('/single', (req, res) => {
         toto: 'tata'
     })
 })
+
+router.post('/translate', async (req, res) => {
+    console.log(req.body)
+    try {
+        const proxy_res = await axios.post(
+            'https://api.reverso.net/translate/v1/translation',
+            req.body,
+            {
+                headers: {
+                    'User-Agent':
+                        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+                }
+            }
+        )
+        res.json(proxy_res.data)
+    } catch (e) {
+        console.log(e)
+    }
+    // res.end()
+})
+
 router.use('/multiple', (req, res) => {
     res.json({
         toto: 'tata',
